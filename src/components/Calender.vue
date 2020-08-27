@@ -74,24 +74,39 @@
         >
           <v-card color="grey lighten-4" min-width="350px" flat>
             <v-toolbar :color="selectedEvent.color" dark>
-              <v-btn icon>
-                <v-icon>mdi-pencil</v-icon>
+              <v-btn icon @click="deleteEvent(selectedEvent.id)">
+                <v-icon>mdi-delete</v-icon>
               </v-btn>
               <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
               <v-spacer></v-spacer>
-              <v-btn icon>
-                <v-icon>mdi-heart</v-icon>
-              </v-btn>
-              <v-btn icon>
-                <v-icon>mdi-dots-vertical</v-icon>
-              </v-btn>
             </v-toolbar>
             <v-card-text>
-              <span v-html="selectedEvent.details"></span>
+              <form v-if="currentEditing != selectedEvent.id">
+                {{ selectedEvent.details }}
+              </form>
+              <form v-else>
+                <textarea-autosize
+                  v-model="selectedEvent.details"
+                  type="text"
+                  style="width: 100%"
+                  :min-height="100"
+                  placeholder="add note"
+                ></textarea-autosize>
+              </form>
             </v-card-text>
             <v-card-actions>
               <v-btn text color="secondary" @click="selectedOpen = false">
-                Cancel
+                Close
+              </v-btn>
+              <v-btn
+                @click.prevent="editEvent(selectedEvent)"
+                text
+                v-if="currentEditing != selectedEvent.id"
+              >
+                Edit
+              </v-btn>
+              <v-btn @click.prevent="updateEvent(selectedEvent)" text v-else>
+                Save
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -165,6 +180,9 @@ export default {
 
       nativeEvent.stopPropagation();
     },
+    editEvent(event) {
+      this.currentEditing = event.id;
+    },
     async getEvents() {
       let snapshot = await db.collection("calEvent").get();
       let events = [];
@@ -174,6 +192,16 @@ export default {
         events.push(appData);
       });
       this.events = events;
+    },
+    async updateEvent(event) {
+      await db
+        .collection("calEvent")
+        .doc(this.currentEditing)
+        .update({
+          details: event.details
+        });
+        this.selectedOpen = false;
+        this.currentEditing = null;
     },
     rnd(a, b) {
       return Math.floor((b - a + 1) * Math.random()) + a;

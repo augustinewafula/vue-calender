@@ -8,6 +8,7 @@ import firebase from "firebase/app";
 import "firebase/firebase-firestore";
 
 Vue.config.productionTip = false;
+Vue.use(VueTextareaAutosize);
 
 firebase.initializeApp({
   apiKey: "AIzaSyAELzsLJsUGwQXQ4iZXJ2jSQijOIYGsiyM",
