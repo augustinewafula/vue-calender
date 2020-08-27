@@ -11,7 +11,14 @@
               mdi-chevron-left
             </v-icon>
           </v-btn>
-          <v-btn fab text small color="grey darken-2" @click="next">
+          <v-btn
+            fab
+            text
+            small
+            color="grey darken-2"
+            @click="next"
+            class="mr-4"
+          >
             <v-icon small>
               mdi-chevron-right
             </v-icon>
