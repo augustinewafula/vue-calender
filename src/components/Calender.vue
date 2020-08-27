@@ -200,8 +200,16 @@ export default {
         .update({
           details: event.details
         });
-        this.selectedOpen = false;
-        this.currentEditing = null;
+      this.selectedOpen = false;
+      this.currentEditing = null;
+    },
+    async deleteEvent(event) {
+      await db
+        .collection("calEvent")
+        .doc(event)
+        .delete();
+      this.selectedOpen = false;
+      this.getEvents();
     },
     rnd(a, b) {
       return Math.floor((b - a + 1) * Math.random()) + a;
